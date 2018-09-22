@@ -7,115 +7,117 @@ public class Spawner : MonoBehaviour
     [Header("Spawn")]
     [Tooltip("Reference objects to be spawn")]
     public GameObject[] reference;
-    private int[] _referenceId;
+    private int[] refId;
 
     [Tooltip("If this is unchecked spawns references sequentally.")]
-    public bool spawnRandomly = true;
+    public bool spawnRandomRef = true;
 
-    public Transform[] spawnPoints;
+    public Transform[] spawnPositions;
+    [Tooltip("If this is unchecked spawns into Spawn Points sequentally.")]
+    public bool spawnRandomPos = true;
 
-
-    public int maxObjectsOnScreen = 20;
-    public int totalObjectsToSpawn = 100;
+    [Tooltip("Number of objects to be spawn")]
+    public int numToSpawn = 100;
+    private int remain;
+    [Tooltip("Shortest time between two spawns")]
     public float minSpawnTime = 0.25f;
+    [Tooltip("Longest time between two spawns")]
     public float maxSpawnTime = 2f;
-    public int objectsPerSpawn = 5;
 
-    [Header("AI or NavMeshAgent Controller")]
-    [Tooltip("NavMeshAgent Controller's target")]
-    public Transform aITarget;
+    [Tooltip("The player")]
+    public Transform player;
 
     [Tooltip("Spawn as headed to AI Target")]
     public bool spawnHeadedToTarget = false;
 
-    private int spawnedObjects = 0;
-    private float nextSpawnTime = 0;
-    private float currentSpawnTime = 0;
+    [Header("Animator")]
+    [Range(1f, 10f)]
+    public float delayIn = 3;
+    [Range(1f, 10f)]
+    public float delayOut = 3;
+
+    private Animator animator;
+    private int boolSpawningId;
+
 
     private void Awake()
     {
-        _referenceId = new int[reference.Length];
+        refId = new int[reference.Length];
         for (int i = 0; i < reference.Length; i++)
         {
-            _referenceId[i] = reference[i].GetInstanceID();
+            refId[i] = reference[i].GetInstanceID();
             ObjectPool.GetOrInitPool(reference[i]);
         }
+
+        animator = GetComponent<Animator>();
+        boolSpawningId = Animator.StringToHash("Spawning");
     }
 
-    private void Update()
+    private IEnumerator Start()
     {
-        currentSpawnTime += Time.deltaTime;
-        if (currentSpawnTime > nextSpawnTime)
+        if (animator != null)
         {
-            currentSpawnTime = 0;
-            nextSpawnTime = Random.Range(minSpawnTime, maxSpawnTime);
-            if (objectsPerSpawn > 0 && spawnedObjects < totalObjectsToSpawn)
+            animator.SetBool(boolSpawningId, true);
+            yield return new WaitForSeconds(delayIn);
+        }
+
+        if (reference == null || reference.Length < 1)
+        {
+            Debug.LogError("There is no reference prefabs attached!");
+        }
+        else
+        {
+            remain = numToSpawn;
+
+            while (remain > 0)
             {
-                List<int> previousSpawnLocations = new List<int>();
-                if (objectsPerSpawn > spawnPoints.Length)
-                {
-                    objectsPerSpawn = spawnPoints.Length - 1;
-                }
+                var randPos = spawnPositions != null && spawnPositions.Length > 0
+                            ? spawnPositions[Random.Range(0, spawnPositions.Length - 1)].position
+                            : transform.position;
+                var go = ObjectPool.GetInstance(refId[GetRefIndex()], randPos, new Quaternion(0, 0, 0, 0));
+                if (player != null && spawnHeadedToTarget)
+                    go.transform.LookAt(player);
 
-                objectsPerSpawn = (objectsPerSpawn > totalObjectsToSpawn) ? objectsPerSpawn - totalObjectsToSpawn : objectsPerSpawn;
+                remain -= 1;
 
-                for (int i = 0; i < objectsPerSpawn; i++)
-                {
-                    if (spawnedObjects < maxObjectsOnScreen)
-                    {
-                        spawnedObjects += 1;
-                        // 1
-                        int spawnPoint = -1;
-                        // 2
-                        while (spawnPoint == -1)
-                        {
-                            // 3
-                            int randomNumber = Random.Range(0, spawnPoints.Length - 1);
-                            // 4
-                            if (!previousSpawnLocations.Contains(randomNumber))
-                            {
-                                previousSpawnLocations.Add(randomNumber);
-                                spawnPoint = randomNumber;
-                            }
-                        }
-
-                        var spawnLocation = spawnPoints[spawnPoint];
-                        var go = ObjectPool.GetInstance(_referenceId[GetNextIndex()], spawnLocation.position, Quaternion.identity);
-
-                        if (aITarget != null)
-                        {
-                            var agentController = go.GetComponent<NavAgentController>();
-                            if (agentController != null)
-                                agentController.Target = aITarget.transform;
-                        }
-
-                        if (spawnHeadedToTarget)
-                            go.transform.LookAt(new Vector3(aITarget.transform.position.x,
-                                                                  go.transform.position.y,
-                                                                  aITarget.transform.position.z));
-                    }
-                }
+                yield return new WaitForSeconds(Random.Range(minSpawnTime, maxSpawnTime));
             }
         }
+
+        if (animator != null)
+        {
+            yield return new WaitForSeconds(delayOut);
+            animator.SetBool(boolSpawningId, false);
+        }
+
+        gameObject.SetActive(false);
     }
 
-
-    private int GetNextIndex()
+    private Vector3 GetSpawnPoint()
     {
-        if (reference == null || reference.Length < 1) //if reference is null or length is zero let the compiler throws a null reference exception
-        {
-            return 0;
-        }
-        else if (spawnRandomly)
+        if (spawnPositions == null || spawnPositions.Length < 1)
+            return transform.position;
+
+        if (spawnRandomPos)
+            return spawnPositions[Random.Range(0, spawnPositions.Length - 1)].position;
+
+        posIndex = posIndex.HasValue && posIndex.Value < spawnPositions.Length - 1 ? posIndex.Value + 1 : 0;
+        return spawnPositions[posIndex.Value].position;
+    }
+    private int? posIndex;
+
+
+    private int GetRefIndex()
+    {
+        if (spawnRandomRef)
         {
             return Random.Range(0, reference.Length - 1);
         }
         else
         {
-            index = index.HasValue && index.Value < reference.Length ? index.Value + 1 : 0;
-            return index.Value;
+            refIndex = refIndex.HasValue && refIndex.Value < reference.Length - 1 ? refIndex.Value + 1 : 0;
+            return refIndex.Value;
         }
     }
-
-    private int? index;
+    private int? refIndex;
 }

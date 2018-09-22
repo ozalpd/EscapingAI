@@ -596,7 +596,6 @@ GameObject:
   - component: {fileID: 95348620461313278}
   - component: {fileID: 195175938542728748}
   - component: {fileID: 114998237091515710}
-  - component: {fileID: 114415961652034346}
   m_Layer: 0
   m_Name: Male_3
   m_TagString: ai
@@ -2244,17 +2243,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &114415961652034346
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1547884886048658}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 725422ab73693430eae1f78702298af4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114998237091515710
 MonoBehaviour:
   m_ObjectHideFlags: 1
