@@ -1711,10 +1711,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   reference:
-  - {fileID: 1864092389410490, guid: 54323089ecb8644359c2d8433240fd2a, type: 2}
-  - {fileID: 1954683394328038, guid: 823c55d73a36945a6abc7332d507f1b8, type: 2}
+  - {fileID: 1693698098322760, guid: 7f5b24c2dac02408d9de440594f37d81, type: 2}
+  - {fileID: 1529937476484666, guid: 67e155696e82842f1b82216629f261ea, type: 2}
+  - {fileID: 1679487034796814, guid: 5e1092ef1b51246a0a3c921513b2a8a0, type: 2}
+  - {fileID: 1303670135048938, guid: 1ff3f2c35b516480f9b7dc395d14307c, type: 2}
   - {fileID: 1887399433824718, guid: 6bc11d624561b4e4ba8530a45994538b, type: 2}
-  - {fileID: 1000936582060972, guid: 386fe31692883488b895d9dbb09082bd, type: 2}
   spawnRandomly: 1
   spawnPoints:
   - {fileID: 1607267740}
@@ -1723,7 +1724,7 @@ MonoBehaviour:
   - {fileID: 1922147623}
   - {fileID: 556523389}
   - {fileID: 740928696}
-  maxObjectsOnScreen: 20
+  maxObjectsOnScreen: 200
   totalObjectsToSpawn: 100
   minSpawnTime: 0.25
   maxSpawnTime: 2
