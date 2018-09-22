@@ -102,7 +102,7 @@ public class Spawner : MonoBehaviour
 
     private int GetNextIndex()
     {
-        if (!(reference.Length > 1)) //if reference is null or length is zero let the compiler throws a null reference exception
+        if (reference == null || reference.Length < 1) //if reference is null or length is zero let the compiler throws a null reference exception
         {
             return 0;
         }
@@ -112,7 +112,7 @@ public class Spawner : MonoBehaviour
         }
         else
         {
-            index = index.HasValue && index.Value < reference.Length - 1 ? index.Value + 1 : 0;
+            index = index.HasValue && index.Value < reference.Length ? index.Value + 1 : 0;
             return index.Value;
         }
     }

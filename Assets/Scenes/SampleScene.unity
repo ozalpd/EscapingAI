@@ -1714,9 +1714,11 @@ MonoBehaviour:
   - {fileID: 1693698098322760, guid: 7f5b24c2dac02408d9de440594f37d81, type: 2}
   - {fileID: 1529937476484666, guid: 67e155696e82842f1b82216629f261ea, type: 2}
   - {fileID: 1679487034796814, guid: 5e1092ef1b51246a0a3c921513b2a8a0, type: 2}
+  - {fileID: 1456584894694702, guid: ec20d6f24759544a38a015ec26468244, type: 2}
+  - {fileID: 1818969506075818, guid: 71309ebac301f480c8c09f47bfae07cc, type: 2}
+  - {fileID: 1547884886048658, guid: c78cc658dec7a4f46b638ef15697a3e0, type: 2}
   - {fileID: 1303670135048938, guid: 1ff3f2c35b516480f9b7dc395d14307c, type: 2}
-  - {fileID: 1887399433824718, guid: 6bc11d624561b4e4ba8530a45994538b, type: 2}
-  spawnRandomly: 1
+  spawnRandomly: 0
   spawnPoints:
   - {fileID: 1607267740}
   - {fileID: 1411231368}
