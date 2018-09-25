@@ -42,21 +42,21 @@ public class AIControl : MonoBehaviour
 
     private void Update()
     {
-        NearToPathEnd = (agent.pathEndPosition - transform.position).magnitude > accuracy;
+        HasWayToMove = (agent.pathEndPosition - transform.position).magnitude > accuracy;
 
         if (randomFleeTime > 0 && Time.time > randomFleeTime + 0.5f)
         {
             DetectThreatAndFlee(threatPosition);
             randomFleeTime = -1;
         }
-        else if (!NearToPathEnd)// && (isFleeing || Time.time > stopTime + idleDuration))
+        else if (!HasWayToMove)// && (isFleeing || Time.time > stopTime + idleDuration))
         {
             PickDestination();
         }
     }
 
 
-    public bool NearToPathEnd
+    public bool HasWayToMove
     {
         get { return _isNearToPathEnd; }
         set
@@ -132,6 +132,9 @@ public class AIControl : MonoBehaviour
                 randomFleeTime = Time.time;
                 i++; //don't push too hard
             } while (!isFleeing || i < 30);
+
+            if (isFleeing)
+                agent.SetDestination(navHit.position);
         }
         else
         {   //We are trying half distance.
